@@ -1,18 +1,3 @@
-#--------------------------------------------------
-#BACKUP/EXPORT + SEND BY EMAIL + RESOURCES HEALTH:
-#Customised by Patrick Coutu (29 feb 2016) 
-#Original by Syed Jahanzaib (https://aacable.wordpress.com/2012/11/19/mikrotik-auto-backup-email-using-gmail-smtp/)
-#Thanks to Syed and go visit his website, it has lots of great MikroTik scripts and tricks!
-
-#SCRIPT RESULTS (EMAIL MESSAGE FORMAT):
-#subject: IDENTITY MMM/DD/YYYY/ HH:MM:SS Configuration BACKUP File or Configuration EXPORT File
-#body: ROUTERMODEL VERSION UPTIME CPU-LOAD FREERAM FREEHDD TEMP
-#file: email_backup.backup or email_export.rsc
-
-#VERY IMPORTANT: #Between all <<>>, you have to change the information for yours and remove <<>>.
-
-#--------------------------------------------------
-
 :log warning "Mikrotik Router BACKUP JOB Started ! (1/4)"
 :local backupfile email_backup
 :local mikrotikexport email_export
@@ -52,5 +37,3 @@
 /file remove $mikrotikexport
 
 :log warning "$company : BACKUP JOB: Process Finished & Backup and Export files are removed. All Done. (4/4)"
-
-#--------------------------------------------------
