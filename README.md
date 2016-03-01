@@ -9,5 +9,4 @@ subject: IDENTITY MMM/DD/YYYY/ HH:MM:SS Configuration BACKUP File or Configurati
 body: ROUTERMODEL VERSION UPTIME CPU-LOAD FREERAM FREEHDD TEMP
 file: email_backup.backup or email_export.rsc 
 
-After you change your personal info, the script will run on any MikroTik/Routerboard 
-and x86 with RouterOS installed without errors or blank fields. Yours to copy and taste !
+After you change your personal info, the script will run on any MikroTik/Routerboard with RouterOS installed without errors or blank fields. Yours to copy and taste !
