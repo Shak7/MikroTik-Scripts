@@ -1,0 +1,56 @@
+#--------------------------------------------------
+#BACKUP/EXPORT + SEND BY EMAIL + RESOURCES HEALTH:
+#Customised by Patrick Coutu (29 feb 2016) 
+#Original by Syed Jahanzaib (https://aacable.wordpress.com/2012/11/19/mikrotik-auto-backup-email-using-gmail-smtp/)
+#Thanks to Syed and go visit his website, it has lots of great MikroTik scripts and tricks!
+
+#SCRIPT RESULTS (EMAIL MESSAGE FORMAT):
+#subject: IDENTITY MMM/DD/YYYY/ HH:MM:SS Configuration BACKUP File or Configuration EXPORT File
+#body: ROUTERMODEL VERSION UPTIME CPU-LOAD FREERAM FREEHDD TEMP
+#file: email_backup.backup or email_export.rsc
+
+#VERY IMPORTANT: #Between all <<>>, you have to change the information for yours and remove <<>>.
+
+#--------------------------------------------------
+
+:log warning "Mikrotik Router BACKUP JOB Started ! (1/4)"
+:local backupfile email_backup
+:local mikrotikexport email_export
+:local sub1 ([/system identity get name])
+:local sub2 ([/system clock get time])
+:local sub3 ([/system clock get date])
+:local company "<<YOURCOMPANYNAME>>"
+:local adminmail1 <<email1(your main email)>>
+:local adminmail2 <<email2(other email account)>>
+ 
+:local gmailid <<GMAILUSER@gmail.com>>
+:local gmailuser <<GMAILUSER>>
+:local gmailpwd <<PASSWORD>>
+:local gmailport 587
+
+:local gmailsmtp
+:set gmailsmtp [:resolve "smtp.gmail.com"];
+ 
+/tool e-mail set address=$gmailsmtp port=$gmailport start-tls=yes from=$gmailid user=$gmailuser password=$gmailpwd
+
+/system backup save name=$backupfile
+/export file=$mikrotikexport
+:delay 10s
+
+:log warning "BACKUP JOB is now sending Backup and Export files via Email using GMAIL SMTP (2/4)"
+ 
+/tool e-mail send to=$adminmail1 subject="$sub1 $sub3 $sub2 Configuration BACKUP File" body="ROUTERMODEL:$[/system resource get board-name] VERSION:$[/system resource get version] UPTIME:$[/system resource get uptime] CPU-LOAD:$[/system resource get cpu-load]% FREERAM:$[/system resource get free-memory] FREEHDD: $[/system resource get free-hdd-space] TEMP:$[/sys health get temperature]C CPUTEMP:$[/sys health get cpu-temperature]C" file=$backupfile start-tls=yes
+/tool e-mail send to=$adminmail1 subject="$sub1 $sub3 $sub2 Configuration EXPORT File" body="ROUTERMODEL:$[/system resource get board-name] VERSION:$[/system resource get version] UPTIME:$[/system resource get uptime] CPULOAD:$[/system resource get cpu-load]% FREERAM:$[/system resource get free-memory] FREEHDD:$[/system resource get free-hdd-space] TEMP:$[/sys health get temperature]C" file=$mikrotikexport start-tls=yes
+
+/tool e-mail send to=$adminmail2 subject="$sub1 $sub3 $sub2 Configuration BACKUP File" body="ROUTERMODEL:$[/system resource get board-name] VERSION:$[/system resource get version] UPTIME:$[/system resource get uptime] CPU-LOAD:$[/system resource get cpu-load]% FREERAM:$[/system resource get free-memory] FREEHDD: $[/system resource get free-hdd-space] TEMP:$[/sys health get temperature]C CPUTEMP:$[/sys health get cpu-temperature]C" file=$backupfile start-tls=yes
+/tool e-mail send to=$adminmail1 subject="$sub1 $sub3 $sub2 Configuration EXPORT File" body="ROUTERMODEL:$[/system resource get board-name] VERSION:$[/system resource get version] UPTIME:$[/system resource get uptime] CPULOAD:$[/system resource get cpu-load]% FREERAM:$[/system resource get free-memory] FREEHDD:$[/system resource get free-hdd-space] TEMP:$[/sys health get temperature]C" file=$mikrotikexport start-tls=yes
+
+:log warning "$company : BACKUP JOB: Sleeping for 30 seconds so email can be delivered (3/4)"
+:delay 30s
+
+/file remove $backupfile
+/file remove $mikrotikexport
+
+:log warning "$company : BACKUP JOB: Process Finished & Backup and Export files are removed. All Done. (4/4)"
+
+#--------------------------------------------------
